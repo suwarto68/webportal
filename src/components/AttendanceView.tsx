@@ -19,7 +19,8 @@ import {
   Send,
   ExternalLink,
   Database,
-  RefreshCw
+  RefreshCw,
+  Home
 } from 'lucide-react';
 
 interface AttendanceViewProps {
@@ -32,6 +33,7 @@ interface AttendanceViewProps {
   onSaveAttendance: (session: AttendanceSession) => void;
   onResetClasses?: (newClasses: ClassGroup[]) => void;
   defaultRombelData?: ClassGroup[];
+  onNavigateToHome?: () => void;
 }
 
 const CLASS_OPTIONS = ['7A', '7B', '8A', '8B', '9A', '9B'];
@@ -46,6 +48,7 @@ export default function AttendanceView({
   onSaveAttendance,
   onResetClasses,
   defaultRombelData,
+  onNavigateToHome,
 }: AttendanceViewProps) {
   // Navigation tab within attendance state ('absen' | 'kelola' | 'riwayat' | 'sheets')
   const [activeSubTab, setActiveSubTab] = useState<'absen' | 'kelola' | 'riwayat' | 'sheets'>('absen');
@@ -545,8 +548,22 @@ function doPost(e) {
             </div>
 
             {/* Footer */}
-            <div className="bg-slate-50 px-6 py-4 flex justify-end">
+            <div className="bg-slate-50 px-6 py-4 flex justify-end gap-2.5">
+              {onNavigateToHome && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    onNavigateToHome();
+                  }}
+                  className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <Home className="w-4 h-4 shrink-0" />
+                  <span>Ke Halaman Home</span>
+                </button>
+              )}
               <button
+                type="button"
                 onClick={() => setShowSuccessModal(false)}
                 className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
               >

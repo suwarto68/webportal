@@ -516,6 +516,7 @@ export default function App() {
             onSaveAttendance={handleSaveAttendance}
             onResetClasses={handleResetClasses}
             defaultRombelData={DEFAULT_ROMBEL_DATA}
+            onNavigateToHome={() => setActiveTab('profil')}
           />
         );
     }
