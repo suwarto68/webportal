@@ -19,8 +19,7 @@ import {
   Send,
   ExternalLink,
   Database,
-  RefreshCw,
-  Home
+  RefreshCw
 } from 'lucide-react';
 
 interface AttendanceViewProps {
@@ -33,7 +32,6 @@ interface AttendanceViewProps {
   onSaveAttendance: (session: AttendanceSession) => void;
   onResetClasses?: (newClasses: ClassGroup[]) => void;
   defaultRombelData?: ClassGroup[];
-  onBackToHome?: () => void;
 }
 
 const CLASS_OPTIONS = ['7A', '7B', '8A', '8B', '9A', '9B'];
@@ -48,7 +46,6 @@ export default function AttendanceView({
   onSaveAttendance,
   onResetClasses,
   defaultRombelData,
-  onBackToHome,
 }: AttendanceViewProps) {
   // Navigation tab within attendance state ('absen' | 'kelola' | 'riwayat' | 'sheets')
   const [activeSubTab, setActiveSubTab] = useState<'absen' | 'kelola' | 'riwayat' | 'sheets'>('absen');
@@ -514,28 +511,12 @@ function doPost(e) {
                   </div>
 
                   {syncStatus !== 'idle' && (
-                    <div className="space-y-3">
-                      <div className={`p-3 rounded-xl text-[11px] leading-relaxed font-semibold ${
-                        syncStatus === 'loading' ? 'bg-blue-50 border border-blue-100 text-blue-700' :
-                        syncStatus === 'success' ? 'bg-emerald-50 border border-emerald-150 text-emerald-800 font-bold' :
-                        'bg-rose-50 border border-rose-150 text-rose-800'
-                      }`}>
-                        <span>{syncMessage}</span>
-                      </div>
-
-                      {syncStatus === 'success' && onBackToHome && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowSuccessModal(false);
-                            onBackToHome();
-                          }}
-                          className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm animate-in fade-in duration-200"
-                        >
-                          <Home className="w-4 h-4" />
-                          <span>Kembali ke Halaman Home</span>
-                        </button>
-                      )}
+                    <div className={`p-3 rounded-xl text-[11px] leading-relaxed font-semibold ${
+                      syncStatus === 'loading' ? 'bg-blue-50 border border-blue-100 text-blue-700' :
+                      syncStatus === 'success' ? 'bg-emerald-50 border border-emerald-150 text-emerald-800 font-bold' :
+                      'bg-rose-50 border border-rose-150 text-rose-800'
+                    }`}>
+                      <span>{syncMessage}</span>
                     </div>
                   )}
                 </div>
@@ -1253,34 +1234,21 @@ function doPost(e) {
                   </div>
 
                   {syncStatus !== 'idle' && (
-                    <div className="space-y-3">
-                      <div className={`p-4 rounded-xl border text-xs leading-relaxed animate-in fade-in duration-200 font-medium ${
-                        syncStatus === 'loading' ? 'bg-blue-50 border-blue-100 text-blue-700' :
-                        syncStatus === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' :
-                        'bg-rose-50 border-rose-200 text-rose-800'
-                      }`}>
-                        <div className="flex gap-1.5 items-start">
-                          {syncStatus === 'success' ? (
-                            <Check className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
-                          ) : syncStatus === 'error' ? (
-                            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
-                          ) : (
-                            <RefreshCw className="w-4 h-4 shrink-0 text-blue-500 animate-spin mt-0.5" />
-                          )}
-                          <span>{syncMessage}</span>
-                        </div>
+                    <div className={`p-4 rounded-xl border text-xs leading-relaxed animate-in fade-in duration-200 font-medium ${
+                      syncStatus === 'loading' ? 'bg-blue-50 border-blue-100 text-blue-700' :
+                      syncStatus === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' :
+                      'bg-rose-50 border-rose-200 text-rose-800'
+                    }`}>
+                      <div className="flex gap-1.5 items-start">
+                        {syncStatus === 'success' ? (
+                          <Check className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
+                        ) : syncStatus === 'error' ? (
+                          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
+                        ) : (
+                          <RefreshCw className="w-4 h-4 shrink-0 text-blue-500 animate-spin mt-0.5" />
+                        )}
+                        <span>{syncMessage}</span>
                       </div>
-
-                      {syncStatus === 'success' && onBackToHome && (
-                        <button
-                          type="button"
-                          onClick={onBackToHome}
-                          className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer flex items-center justify-center space-x-2 shadow-sm animate-in fade-in duration-200"
-                        >
-                          <Home className="w-4 h-4" />
-                          <span>Kembali ke Halaman Home</span>
-                        </button>
-                      )}
                     </div>
                   )}
                 </div>

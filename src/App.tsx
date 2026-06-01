@@ -27,13 +27,20 @@ import {
   BookOpen,
   Info,
   CalendarCheck,
+  Lock,
+  Eye,
+  EyeOff,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+  Key,
 } from 'lucide-react';
 
 type TabType = 'profil' | 'jadwal' | 'silabus' | 'bahan' | 'absen';
 
 const INITIAL_PROFILE: TeacherProfile = {
   name: 'Suwarto, S.Pd',
-  nip: '198205122010011012',
+  nip: '197508062010011011', // Sync with user requested NIP
   school: 'SMP Negeri Belajar Pratama',
   subject: 'Guru Matematika',
   email: 'suwarto68@guru.smp.belajar.id',
@@ -252,6 +259,15 @@ const DEFAULT_ROMBEL_DATA: ClassGroup[] = [
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('profil');
 
+  // Authentication states
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return localStorage.getItem('smp_guru_is_logged_in') === 'true';
+  });
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
   // Core administrative states
   const [profile, setProfile] = useState<TeacherProfile>(INITIAL_PROFILE);
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
@@ -328,6 +344,38 @@ export default function App() {
       }
     }
   }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    
+    const trimmedUser = usernameInput.trim();
+    const trimmedPass = passwordInput.trim();
+
+    if (!trimmedUser || !trimmedPass) {
+      setLoginError('User ID dan Password wajib diisi.');
+      return;
+    }
+
+    if (trimmedUser === '197508062010011011' && trimmedPass === 'Smpn1wnry05') {
+      setIsLoggedIn(true);
+      localStorage.setItem('smp_guru_is_logged_in', 'true');
+      // Set name and NIP correctly to reflect the teacher's profile
+      const updatedProfile = { ...profile, nip: '197508062010011011' };
+      setProfile(updatedProfile);
+      localStorage.setItem('smp_guru_profile', JSON.stringify(updatedProfile));
+    } else {
+      setLoginError('User ID atau Password salah. Silakan periksa kembali!');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('smp_guru_is_logged_in');
+    setUsernameInput('');
+    setPasswordInput('');
+    setLoginError('');
+  };
 
   // Save triggers when states change
   const handleChangeProfile = (updatedProfile: TeacherProfile) => {
@@ -468,11 +516,161 @@ export default function App() {
             onSaveAttendance={handleSaveAttendance}
             onResetClasses={handleResetClasses}
             defaultRombelData={DEFAULT_ROMBEL_DATA}
-            onBackToHome={() => setActiveTab('profil')}
           />
         );
     }
   };
+
+  if (!isLoggedIn) {
+    return (
+      <div id="portal-login-screen" className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans antialiased text-slate-800">
+        <div></div> {/* Spacing container */}
+        <div className="max-w-md w-full mx-auto px-4 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden"
+          >
+            {/* Header banner */}
+            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 translate-x-1/4 translate-y-1/4 opacity-10">
+                <BookOpen className="w-64 h-64" />
+              </div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="bg-white/10 backdrop-blur-md p-2.5 rounded-2xl">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest text-blue-100">Portal Akademik</span>
+              </div>
+              <h2 className="text-2xl font-black tracking-tight font-sans">PORTAL GURU SMP</h2>
+              <p className="text-blue-100 text-xs mt-1 font-medium">Sistem Informasi, Absensi Siswa &amp; Administrasi Kelas Mandiri</p>
+            </div>
+
+            {/* Login form body */}
+            <form onSubmit={handleLogin} className="p-8 space-y-6">
+              {loginError && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-rose-50 border border-rose-100 text-rose-800 p-4 rounded-2xl flex items-start gap-2.5 text-xs font-semibold leading-relaxed"
+                >
+                  <Info className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span>{loginError}</span>
+                </motion.div>
+              )}
+
+              <div className="space-y-4">
+                {/* User ID Field */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-extrabold text-slate-700 block transition-all">User ID (Sesuai NIP)</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="text"
+                      required
+                      value={usernameInput}
+                      onChange={(e) => setUsernameInput(e.target.value)}
+                      placeholder="Masukkan User ID Anda..."
+                      className="w-full text-xs pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Password Field */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-extrabold text-slate-700">Password</label>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Lock className="w-4 h-4" />
+                    </div>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      placeholder="Masukkan Password Anda..."
+                      className="w-full text-xs pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action submit button */}
+              <button
+                type="submit"
+                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-2xl text-xs transition-all flex items-center justify-center space-x-2 shadow-md hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] cursor-pointer"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Masuk ke Portal</span>
+              </button>
+
+              {/* Instructive Credential Assistant card */}
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2.5 text-xs text-slate-600">
+                <div className="flex items-center space-x-1.5 text-slate-800">
+                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span className="font-bold">Info Demo Akun Guru</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-500">
+                  Silakan gunakan kredensial portal SMP resmi untuk masuk sebagai guru pengampu:
+                </p>
+                <div className="bg-white rounded-xl p-2.5 border border-slate-200 font-mono text-[10px] space-y-1 text-slate-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">User:</span>
+                    <button
+                      type="button"
+                      onClick={() => setUsernameInput('197508062010011011')}
+                      className="font-bold text-blue-600 hover:underline cursor-pointer flex items-center space-x-1"
+                      title="Klik untuk mengisi otomatis"
+                    >
+                      <span>197508062010011011</span>
+                      <span className="text-[9px] bg-blue-50 text-blue-500 px-1 rounded font-sans uppercase">Isi</span>
+                    </button>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">Pasword:</span>
+                    <button
+                      type="button"
+                      onClick={() => setPasswordInput('Smpn1wnry05')}
+                      className="font-bold text-blue-600 hover:underline cursor-pointer flex items-center space-x-1"
+                      title="Klik untuk mengisi otomatis"
+                    >
+                      <span>Smpn1wnry05</span>
+                      <span className="text-[9px] bg-blue-50 text-blue-500 px-1 rounded font-sans uppercase">Isi</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-semibold uppercase tracking-wider">
+                  <Key className="w-3 h-3" />
+                  <span>Autentikasi Lokal Terenkripsi</span>
+                </div>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+
+        {/* Footer info lock */}
+        <div className="py-6 text-center text-[11px] text-slate-400 font-medium">
+          <p>© {new Date().getFullYear()} – Portal Akademik Guru Mandiri. Semua hak cipta dilindungi.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id="portal-app-wrapper" className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans antialiased">
@@ -495,13 +693,24 @@ export default function App() {
             <div className="flex items-center space-x-4">
               <div className="hidden md:block text-right">
                 <p className="text-sm font-extrabold text-slate-900">{profile.name}</p>
-                <p className="text-xs text-slate-500 font-medium">
-                  {profile.subject} • {profile.school || 'SMP'}
-                </p>
+                <span className="text-xs text-slate-500 font-medium">
+                  {profile.subject} • NIP: {profile.nip}
+                </span>
               </div>
               <div className="w-10 h-10 bg-blue-100 rounded-full border border-blue-200 flex items-center justify-center text-blue-700 font-extrabold shadow-sm">
-                S
+                {profile.name ? profile.name.charAt(0) : 'S'}
               </div>
+
+              {/* Keluar / Logout button */}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="py-2.5 px-3.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer border border-slate-200 hover:border-rose-250 shadow-sm"
+                title="Keluar dari Portal Guru"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Keluar</span>
+              </button>
             </div>
           </div>
         </div>
