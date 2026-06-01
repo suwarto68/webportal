@@ -1,0 +1,6 @@
+{
+  "name": "Portal Guru SMP",
+  "description": "Aplikasi portal administrasi mengajar guru SMP untuk mengelola profil, jadwal, silabus, bahan ajar, dan absensi siswa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
