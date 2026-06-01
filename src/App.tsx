@@ -620,45 +620,10 @@ export default function App() {
                 <span>Masuk ke Portal</span>
               </button>
 
-              {/* Instructive Credential Assistant card */}
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2.5 text-xs text-slate-600">
-                <div className="flex items-center space-x-1.5 text-slate-800">
-                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span className="font-bold">Info Demo Akun Guru</span>
-                </div>
-                <p className="text-[11px] leading-relaxed text-slate-500">
-                  Silakan gunakan kredensial portal SMP resmi untuk masuk sebagai guru pengampu:
-                </p>
-                <div className="bg-white rounded-xl p-2.5 border border-slate-200 font-mono text-[10px] space-y-1 text-slate-700">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-400">User:</span>
-                    <button
-                      type="button"
-                      onClick={() => setUsernameInput('197508062010011011')}
-                      className="font-bold text-blue-600 hover:underline cursor-pointer flex items-center space-x-1"
-                      title="Klik untuk mengisi otomatis"
-                    >
-                      <span>197508062010011011</span>
-                      <span className="text-[9px] bg-blue-50 text-blue-500 px-1 rounded font-sans uppercase">Isi</span>
-                    </button>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-400">Pasword:</span>
-                    <button
-                      type="button"
-                      onClick={() => setPasswordInput('Smpn1wnry05')}
-                      className="font-bold text-blue-600 hover:underline cursor-pointer flex items-center space-x-1"
-                      title="Klik untuk mengisi otomatis"
-                    >
-                      <span>Smpn1wnry05</span>
-                      <span className="text-[9px] bg-blue-50 text-blue-500 px-1 rounded font-sans uppercase">Isi</span>
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 text-[9px] text-slate-400 font-semibold uppercase tracking-wider">
-                  <Key className="w-3 h-3" />
-                  <span>Autentikasi Lokal Terenkripsi</span>
-                </div>
+              {/* Information secure info banner */}
+              <div className="flex items-center gap-2 px-1 text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+                <Key className="w-3 h-3 text-slate-350" />
+                <span>Autentikasi Terenkripsi Khusus Tenaga Pendidik</span>
               </div>
             </form>
           </motion.div>
